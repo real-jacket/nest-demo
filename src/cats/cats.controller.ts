@@ -15,10 +15,12 @@ import { Cat } from './interface/cat.interface';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { LoggingInterceptor } from '../interceptor/logging.interceptor';
 import { AppGuard } from '../guard/app.guard';
+import { Bbb } from '../decorator/bbb.decorator';
+import { MyHeader } from '../decorator/my-header.decorator';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('cats')
-@SetMetadata('roles', ['user'])
+@Bbb('user')
 export class CatsControllers {
   constructor(private catsService: CatsService) {}
 
@@ -29,10 +31,10 @@ export class CatsControllers {
 
   @Get()
   @UseGuards(AppGuard)
-  @SetMetadata('roles', ['admin'])
+  @Bbb('admin')
   async findAll(
     @Headers('Accept') accept: string,
-    @Headers() headers: Record<string, any>,
+    @MyHeader() headers: Record<string, any>,
   ): Promise<Cat[]> {
     console.log('accept: ', accept);
     console.log('headers: ', headers);
