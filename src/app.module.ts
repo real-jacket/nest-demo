@@ -12,9 +12,28 @@ import { logger } from './middlewares/logger.middleware';
 import { AaaController } from './aaa.controller';
 import { MmmModule } from './mmm/mmm.module';
 import { NnnModule } from './nnn/nnn.module';
+import { DddModule } from './ddd/ddd.module';
+import { LllModule } from './lll/lll.module';
 
 @Module({
-  imports: [CatsModule, MmmModule, NnnModule],
+  imports: [
+    CatsModule,
+    MmmModule,
+    NnnModule,
+    DddModule.register({
+      ddd: 1,
+      ddd2: 2,
+    }),
+    // LllModule.register({
+    //   aaa: 1,
+    //   bbb: 'sa',
+    // }),
+    LllModule.forRoot({
+      aaa: 1,
+      bbb: 'sa',
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController, AaaController],
   providers: [AppService],
 })
