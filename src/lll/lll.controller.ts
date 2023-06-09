@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  UseInterceptors,
 } from '@nestjs/common';
 import { LllService } from './lll.service';
 import { CreateLllDto } from './dto/create-lll.dto';
@@ -16,6 +17,7 @@ import {
   MODULE_OPTIONS_TOKEN,
   OPTIONS_TYPE,
 } from './lll.module-definition';
+import { CatchErrorTestInterceptor } from 'src/interceptor/catch-error-test.interceptor';
 
 @Controller('lll')
 export class LllController {
@@ -30,8 +32,10 @@ export class LllController {
   }
 
   @Get()
+  @UseInterceptors(CatchErrorTestInterceptor)
   findAll() {
     console.log('ll module data: ', this.options);
+    throw new Error('xxx-yyy');
     return this.lllService.findAll();
   }
 

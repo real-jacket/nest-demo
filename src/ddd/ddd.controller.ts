@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
   Inject,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DddService } from './ddd.service';
 import { CreateDddDto } from './dto/create-ddd.dto';
 import { UpdateDddDto } from './dto/update-ddd.dto';
+import { MapTestInterceptor } from 'src/interceptor/map-test.interceptor';
+import { TimeoutInterceptor } from 'src/interceptor/timeout.interceptor';
 
 @Controller('ddd')
 export class DddController {
@@ -25,13 +28,16 @@ export class DddController {
   }
 
   @Get()
+  @UseInterceptors(MapTestInterceptor)
   findAll() {
     console.log(this.configOptions);
     return this.dddService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @UseInterceptors(TimeoutInterceptor)
+  async findOne(@Param('id') id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 4000));
     return this.dddService.findOne(+id);
   }
 

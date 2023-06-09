@@ -14,6 +14,7 @@ import { MmmModule } from './mmm/mmm.module';
 import { NnnModule } from './nnn/nnn.module';
 import { DddModule } from './ddd/ddd.module';
 import { LllModule } from './lll/lll.module';
+import { AaaMiddleware } from './middlewares/aaa.middleware';
 
 @Module({
   imports: [
@@ -47,14 +48,11 @@ import { LllModule } from './lll/lll.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        // LoggerMiddleware
-        logger,
-      )
-      .forRoutes({
-        path: 'cats',
-        method: RequestMethod.ALL,
-      });
+    consumer.apply(logger).forRoutes({
+      path: 'cats',
+      method: RequestMethod.ALL,
+    });
+
+    consumer.apply(AaaMiddleware).forRoutes('*');
   }
 }
