@@ -27,11 +27,19 @@ import { LllModule } from './lll/lll.module';
     // LllModule.register({
     //   aaa: 1,
     //   bbb: 'sa',
+    //   isGlobal: false,
     // }),
-    LllModule.forRoot({
-      aaa: 1,
-      bbb: 'sa',
+    LllModule.registerAsync({
+      useFactory: () => {
+        return {
+          aaa: 1,
+          bbb: 'xx',
+          xxx: '12',
+        };
+      },
       isGlobal: true,
+      isFake: false,
+      inject: [],
     }),
   ],
   controllers: [AppController, AaaController],

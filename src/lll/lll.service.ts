@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateLllDto } from './dto/create-lll.dto';
 import { UpdateLllDto } from './dto/update-lll.dto';
+import { MODULE_OPTIONS_TOKEN, OPTIONS_TYPE } from './lll.module-definition';
 
 @Injectable()
 export class LllService {

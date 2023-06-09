@@ -6,5 +6,6 @@ import { ConfigurableModuleClass } from './lll.module-definition';
 @Module({
   controllers: [LllController],
   providers: [LllService],
+  exports: [LllService],
 })
 export class LllModule extends ConfigurableModuleClass {}

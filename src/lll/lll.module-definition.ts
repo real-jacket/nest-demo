@@ -15,14 +15,18 @@ export const {
   //   new ConfigurableModuleBuilder<LllModuleOptions>()
   //         .setClassMethodName('forRoot')
   new ConfigurableModuleBuilder<LllModuleOptions>()
-    .setClassMethodName('forRoot')
+    .setClassMethodName('register')
     .setExtras(
       {
-        isGlobal: true,
+        isGlobal: false,
+        isFake: true,
       },
-      (definition, extras) => ({
-        ...definition,
-        global: extras.isGlobal,
-      }),
+      (definition, extras) => {
+        console.log('extras: ', extras);
+        return {
+          ...definition,
+          global: extras.isGlobal,
+        };
+      },
     )
     .build();
