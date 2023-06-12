@@ -3,6 +3,7 @@ import {
   Module,
   NestModule,
   RequestMethod,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +16,8 @@ import { NnnModule } from './nnn/nnn.module';
 import { DddModule } from './ddd/ddd.module';
 import { LllModule } from './lll/lll.module';
 import { AaaMiddleware } from './middlewares/aaa.middleware';
+import { APP_PIPE } from '@nestjs/core';
+import { MyValidationPipe } from './pipe/my-validation.pipe';
 
 @Module({
   imports: [
@@ -44,7 +47,22 @@ import { AaaMiddleware } from './middlewares/aaa.middleware';
     }),
   ],
   controllers: [AppController, AaaController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'validation_options',
+      useFactory() {
+        return {
+          aaa: 1,
+          bbb: 2,
+        };
+      },
+    },
+    // {
+    //   provide: APP_PIPE,
+    //   useClass: MyValidationPipe,
+    // },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
