@@ -18,6 +18,7 @@ import { LllModule } from './lll/lll.module';
 import { AaaMiddleware } from './middlewares/aaa.middleware';
 import { APP_PIPE } from '@nestjs/core';
 import { MyValidationPipe } from './pipe/my-validation.pipe';
+import { UploadController } from './upload/upload.controller';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { MyValidationPipe } from './pipe/my-validation.pipe';
       inject: [],
     }),
   ],
-  controllers: [AppController, AaaController],
+  controllers: [AppController, AaaController, UploadController],
   providers: [
     AppService,
     {
@@ -66,11 +67,10 @@ import { MyValidationPipe } from './pipe/my-validation.pipe';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(logger).forRoutes({
-      path: 'cats',
-      method: RequestMethod.ALL,
-    });
-
-    consumer.apply(AaaMiddleware).forRoutes('*');
+    // consumer.apply(logger).forRoutes({
+    //   path: 'cats',
+    //   method: RequestMethod.ALL,
+    // });
+    // consumer.apply(AaaMiddleware).forRoutes('*');
   }
 }

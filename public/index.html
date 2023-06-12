@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nest-upload</title>
+    <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <input id="fileInput" type="file" multiple />
+    <script>
+        const fileInput = document.querySelector('#fileInput');
+
+        async function formData() {
+            const data = new FormData();
+            data.set('name', '光');
+            data.set('age', 20);
+            data.set('file', fileInput.files[0]);
+
+            const res = await axios.post('http://127.0.0.1:3001/upload/aaa', data);
+            console.log(res);
+        }
+
+        async function formData2() {
+            const data = new FormData();
+            data.set('name', '光');
+            data.set('age', 20);
+
+            [...fileInput.files].forEach(item =>
+                data('file', fileInput.files[0]));
+
+            const res = await axios.post('http://127.0.0.1:3001/upload/bbb', data);
+            console.log(res);
+        }
+
+
+        async function formData3() {
+            const data = new FormData();
+            data.set('name', '光');
+            data.set('age', 20);
+
+            [...fileInput.files].forEach((item, i) => {
+                const l = fileInput.files.length
+                if (i < l / 2) {
+                    data.append('aaa', item)
+                } else {
+                    data.append('bbb', item)
+                }
+            }
+            );
+
+            const res = await axios.post('http://127.0.0.1:3001/upload/ccc', data);
+            console.log(res);
+        }
+
+        async function formData4() {
+            const data = new FormData();
+            data.set('name', '光');
+            data.set('age', 20);
+
+            [...fileInput.files].forEach((item, i) =>
+                data.append(String.fromCharCode(i + 65).toLocaleLowerCase().repeat(3), item)
+            );
+
+            const res = await axios.post('http://127.0.0.1:3001/upload/ddd', data);
+            console.log(res);
+        }
+
+
+        async function formData5() {
+            const data = new FormData();
+            data.set('name', '光');
+            data.set('age', 20);
+            data.set('file', fileInput.files[0]);
+
+            const res = await axios.post('http://127.0.0.1:3001/upload/ggg', data);
+            console.log(res);
+        }
+
+        fileInput.onchange = formData5
+    </script>
+</body>

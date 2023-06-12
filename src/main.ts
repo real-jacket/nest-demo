@@ -7,22 +7,26 @@ import { LoggingInterceptor } from './interceptor/logging.interceptor';
 import { MapTestInterceptor } from './interceptor/map-test.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
 
-  app.use(
-    session({
-      secret: 'ke',
-      cookie: { maxAge: 10000 },
-    }),
-  );
+  // app.use(
+  //   session({
+  //     secret: 'ke',
+  //     cookie: { maxAge: 10000 },
+  //   }),
+  // );
 
   // app.useGlobalInterceptors(new LoggingInterceptor());
   // app.useGlobalInterceptors(new MapTestInterceptor());
 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
+    prefix: '/static',
+  });
+  // app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
-  app.setViewEngine('hbs');
+  // app.setViewEngine('hbs');
 
   await app.listen(3001);
 }
