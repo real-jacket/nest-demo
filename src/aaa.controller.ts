@@ -5,6 +5,7 @@ import {
   HostParam,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   ParseArrayPipe,
   ParseBoolPipe,
@@ -23,9 +24,12 @@ import { MyQuery } from './decorator/my-query.decorator';
 import { AaaPipe } from './pipe/aaa.pipe';
 import { CreateDddDto } from './ddd/dto/create-ddd.dto';
 import { MyValidationPipe } from './pipe/my-validation.pipe';
+import { AppController } from './app.controller';
 
 @Controller({ host: ':host.0.0.1', path: 'aaa' })
 export class AaaController {
+  private logger = new Logger();
+
   @Get('bbb')
   hello(): string {
     return 'hello';
@@ -106,5 +110,16 @@ export class AaaController {
   @Post('ooo')
   ooo(@Body(ValidationPipe) obj: CreateDddDto) {
     console.log(obj);
+  }
+
+  @Get('log')
+  log() {
+    this.logger.debug('aaa', AaaController.name);
+    this.logger.error('bbb', AaaController.name);
+    this.logger.log('ccc', AaaController.name);
+    this.logger.verbose('ddd', AppController.name);
+    this.logger.warn('eee', AaaController.name);
+
+    return 'log hello';
   }
 }
