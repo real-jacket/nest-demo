@@ -1,0 +1,13 @@
+*.md
+node_modules/
+.git/
+.DS_Store
+.vscode/
+.dockerignore
+.vscode
+.history
+*uploads
+dist
+.eslintrc.js
+.prettierrc
+.gitignore

@@ -21,7 +21,7 @@ async function bootstrap() {
   // app.useGlobalInterceptors(new LoggingInterceptor());
   // app.useGlobalInterceptors(new MapTestInterceptor());
 
-  app.useStaticAssets(join(__dirname, '..', 'public'), {
+  app.useStaticAssets(join(process.cwd(), 'public'), {
     prefix: '/static',
   });
   // app.setBaseViewsDir(join(__dirname, '..', 'views'));
