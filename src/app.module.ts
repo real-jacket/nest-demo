@@ -22,6 +22,7 @@ import { UploadController } from './upload/upload.controller';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { createClient } from 'redis';
 
 @Module({
   imports: [
@@ -70,6 +71,20 @@ import { User } from './user/entities/user.entity';
   controllers: [AppController, AaaController, UploadController],
   providers: [
     AppService,
+    {
+      provide: 'REDIS_CLIENT',
+      async useFactory() {
+        const client = createClient({
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+        });
+
+        await client.connect();
+        return client;
+      },
+    },
     {
       provide: 'validation_options',
       useFactory() {

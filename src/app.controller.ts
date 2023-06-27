@@ -20,11 +20,11 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @UseFilters(XxxFilter)
-  @UseGuards(AaaGuard)
-  @Roles(Role.Admin)
-  getHello(): string {
-    throw new XxxException('aaa', 'bbb');
-    return this.appService.getHello();
+  // @UseFilters(XxxFilter)
+  // @UseGuards(AaaGuard)
+  // @Roles(Role.Admin)
+  async getHello() {
+    // throw new XxxException('aaa', 'bbb');
+    return await this.appService.getHello();
   }
 }
