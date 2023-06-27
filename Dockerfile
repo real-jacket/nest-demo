@@ -24,6 +24,8 @@ WORKDIR /app
 
 RUN npm install --production
 
+RUN npm install pm2 -g
+
 EXPOSE 3001
 
-CMD [ "node","/app/main.js" ]
+CMD [ "pm2-runtime","/app/main.js" ]
