@@ -11,12 +11,14 @@ async function bootstrap() {
     cors: true,
   });
 
-  // app.use(
-  //   session({
-  //     secret: 'ke',
-  //     cookie: { maxAge: 10000 },
-  //   }),
-  // );
+  app.use(
+    session({
+      secret: 'ke',
+      resave: false,
+      // cookie: { maxAge: 10000 },
+      saveUninitialized: false,
+    }),
+  );
 
   // app.useGlobalInterceptors(new LoggingInterceptor());
   // app.useGlobalInterceptors(new MapTestInterceptor());

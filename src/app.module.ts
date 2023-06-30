@@ -23,9 +23,16 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { createClient } from 'redis';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    JwtModule.register({
+      secret: 'ke',
+      signOptions: {
+        expiresIn: '7d',
+      },
+    }),
     CatsModule,
     MmmModule,
     NnnModule,
