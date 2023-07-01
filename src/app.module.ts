@@ -28,6 +28,7 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     JwtModule.register({
+      global: true,
       secret: 'ke',
       signOptions: {
         expiresIn: '7d',
@@ -64,7 +65,7 @@ import { JwtModule } from '@nestjs/jwt';
       port: 3306,
       username: 'root',
       password: 'ke',
-      database: 'typeorm_test',
+      database: 'login_test',
       synchronize: true,
       logging: true,
       entities: [User],

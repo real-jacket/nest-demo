@@ -16,6 +16,7 @@ import {
   Render,
   Req,
   Res,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -25,12 +26,14 @@ import { AaaPipe } from './pipe/aaa.pipe';
 import { CreateDddDto } from './ddd/dto/create-ddd.dto';
 import { MyValidationPipe } from './pipe/my-validation.pipe';
 import { AppController } from './app.controller';
+import { LoginGuard } from './guard/login.guard';
 
 @Controller({ host: ':host.0.0.1', path: 'aaa' })
 export class AaaController {
   private logger = new Logger();
 
   @Get('bbb')
+  @UseGuards(LoginGuard)
   hello(): string {
     return 'hello';
   }
