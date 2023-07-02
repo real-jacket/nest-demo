@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { BbbService } from './bbb.service';
 import { CreateBbbDto } from './dto/create-bbb.dto';
 import { UpdateBbbDto } from './dto/update-bbb.dto';
 import { LoginGuard } from 'src/guard/login.guard';
+import { PermissionGuard } from 'src/guard/permission.guard';
 
 @Controller('bbb')
 export class BbbController {
@@ -24,7 +26,8 @@ export class BbbController {
   }
 
   @Get()
-  @UseGuards(LoginGuard)
+  @UseGuards(LoginGuard, PermissionGuard)
+  @SetMetadata('permission', 'query_bbb')
   findAll() {
     return this.bbbService.findAll();
   }

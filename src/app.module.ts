@@ -27,6 +27,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Permission } from './user/entities/permission.entity';
 import { AaaModule } from './aaa/aaa.module';
 import { BbbModule } from './bbb/bbb.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -80,24 +81,11 @@ import { BbbModule } from './bbb/bbb.module';
     }),
     AaaModule,
     BbbModule,
+    RedisModule,
   ],
   controllers: [AppController, AaaController, UploadController],
   providers: [
     AppService,
-    {
-      provide: 'REDIS_CLIENT',
-      async useFactory() {
-        const client = createClient({
-          socket: {
-            host: 'localhost',
-            port: 6379,
-          },
-        });
-
-        await client.connect();
-        return client;
-      },
-    },
     {
       provide: 'validation_options',
       useFactory() {
