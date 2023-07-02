@@ -17,7 +17,6 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { log } from 'console';
 
 @Controller('user')
 export class UserController {
@@ -52,5 +51,11 @@ export class UserController {
   @Post('register')
   register(@Body(ValidationPipe) user: RegisterDto) {
     return this.userService.register(user);
+  }
+
+  @Get('init')
+  async initData() {
+    await this.userService.InitData();
+    return 'init data done';
   }
 }

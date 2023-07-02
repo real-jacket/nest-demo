@@ -28,7 +28,7 @@ import { MyValidationPipe } from './pipe/my-validation.pipe';
 import { AppController } from './app.controller';
 import { LoginGuard } from './guard/login.guard';
 
-@Controller({ host: ':host.0.0.1', path: 'aaa' })
+@Controller({ host: ':host.0.0.1', path: 'test' })
 export class AaaController {
   private logger = new Logger();
 

@@ -10,7 +10,7 @@ import { AppService } from './app.service';
 import { CatsModule } from './cats/cats.module';
 import { logger } from './middlewares/logger.middleware';
 // import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { AaaController } from './aaa.controller';
+import { AaaController } from './test.controller';
 import { MmmModule } from './mmm/mmm.module';
 import { NnnModule } from './nnn/nnn.module';
 import { DddModule } from './ddd/ddd.module';
@@ -24,6 +24,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { createClient } from 'redis';
 import { JwtModule } from '@nestjs/jwt';
+import { Permission } from './user/entities/permission.entity';
+import { AaaModule } from './aaa/aaa.module';
+import { BbbModule } from './bbb/bbb.module';
 
 @Module({
   imports: [
@@ -65,16 +68,18 @@ import { JwtModule } from '@nestjs/jwt';
       port: 3306,
       username: 'root',
       password: 'ke',
-      database: 'login_test',
+      database: 'acl_test',
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: [User, Permission],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
         authPlugin: 'sha256_password',
       },
     }),
+    AaaModule,
+    BbbModule,
   ],
   controllers: [AppController, AaaController, UploadController],
   providers: [
