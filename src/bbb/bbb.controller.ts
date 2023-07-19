@@ -14,8 +14,10 @@ import { CreateBbbDto } from './dto/create-bbb.dto';
 import { UpdateBbbDto } from './dto/update-bbb.dto';
 import { LoginGuard } from 'src/guard/login.guard';
 import { PermissionGuard } from 'src/guard/permission.guard';
+import { RequireLogin } from 'src/decorator/login.decorator';
 
 @Controller('bbb')
+@RequireLogin()
 export class BbbController {
   constructor(private readonly bbbService: BbbService) {}
 

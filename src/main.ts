@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import { join } from 'path';
 import { LoggingInterceptor } from './interceptor/logging.interceptor';
 import { MapTestInterceptor } from './interceptor/map-test.interceptor';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -22,6 +23,8 @@ async function bootstrap() {
 
   // app.useGlobalInterceptors(new LoggingInterceptor());
   // app.useGlobalInterceptors(new MapTestInterceptor());
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.useStaticAssets(join(process.cwd(), 'public'), {
     prefix: '/static',

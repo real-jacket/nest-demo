@@ -14,8 +14,10 @@ import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
 import { LoginGuard } from 'src/guard/login.guard';
 import { PermissionGuard } from 'src/guard/permission.guard';
+import { RequireLogin } from 'src/decorator/login.decorator';
 
 @Controller('aaa')
+@RequireLogin()
 export class AaaController {
   constructor(private readonly aaaService: AaaService) {}
 

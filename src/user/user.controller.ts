@@ -31,12 +31,14 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const foundUser = await this.userService.login(user);
+    console.log('foundUser: ', foundUser);
 
     if (foundUser) {
       const token = await this.jwtService.signAsync({
         user: {
-          id: foundUser.id,
+          // id: foundUser.id,
           username: foundUser.username,
+          roles: foundUser.roles,
         },
       });
 

@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
@@ -6,12 +6,13 @@ import {
   InjectEntityManager,
   InjectRepository,
 } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { Permission } from './entities/permission.entity';
+import { Role } from './entities/role.entity';
 
 function md5(str: crypto.BinaryLike) {
   const hash = crypto.createHash('md5');
@@ -71,7 +72,7 @@ export class UserService {
     });
 
     if (foundUser) {
-      throw new HttpException('用户已经存在', 200);
+      throw new HttpException('用户已经存在', HttpStatus.ACCEPTED);
     }
 
     const newUser = new User();
@@ -90,16 +91,21 @@ export class UserService {
   }
 
   async login(user: LoginDto) {
-    const foundUser = await this.userRepository.findOneBy({
-      username: user.username,
+    const foundUser = await this.entityManager.findOne(User, {
+      where: {
+        username: user.username,
+      },
+      relations: {
+        roles: true,
+      },
     });
 
     if (!foundUser) {
-      throw new HttpException('用户名不存在', 200);
+      throw new HttpException('用户名不存在', HttpStatus.ACCEPTED);
     }
 
     if (foundUser.password !== md5(user.password)) {
-      throw new HttpException('密码错误', 200);
+      throw new HttpException('密码错误', HttpStatus.ACCEPTED);
     }
 
     return foundUser;
@@ -141,14 +147,42 @@ export class UserService {
     const user1 = new User();
     user1.username = '东东';
     user1.password = md5('aaaaaa');
-    user1.permissions = [permission1, permission2, permission3, permission4];
+    // user1.permissions = [permission1, permission2, permission3, permission4];
 
     const user2 = new User();
     user2.username = '光光';
     user2.password = md5('bbbbbb');
-    user2.permissions = [permission5, permission6, permission7, permission8];
+    // user2.permissions = [permission5, permission6, permission7, permission8];
 
-    await this.entityManager.save([
+    const user3 = new User();
+    user3.username = '王五';
+    user3.password = '333333';
+
+    const role1 = new Role();
+    role1.name = '管理员';
+
+    const role2 = new Role();
+    role2.name = '普通用户';
+
+    role1.permissions = [
+      permission1,
+      permission2,
+      permission3,
+      permission4,
+      permission5,
+      permission6,
+      permission7,
+      permission8,
+    ];
+
+    role2.permissions = [permission1, permission2, permission3, permission4];
+
+    user1.roles = [role1];
+    user2.roles = [role2];
+
+    user3.roles = [role2];
+
+    await this.entityManager.save(Permission, [
       permission1,
       permission2,
       permission3,
@@ -158,7 +192,9 @@ export class UserService {
       permission7,
       permission8,
     ]);
-    await this.entityManager.save([user1, user2]);
+    await this.entityManager.save(Role, [role1, role2]);
+
+    await this.entityManager.save(User, [user1, user2, user3]);
   }
 
   async findByUsername(username: string) {
@@ -167,10 +203,21 @@ export class UserService {
         username,
       },
       relations: {
-        permissions: true,
+        // permissions: true,
       },
     });
 
     return user;
+  }
+
+  async findRolesByIds(roleIds: number[]) {
+    return this.entityManager.find(Role, {
+      where: {
+        id: In(roleIds),
+      },
+      relations: {
+        permissions: true,
+      },
+    });
   }
 }

@@ -24,8 +24,7 @@ export class PermissionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    const user = (request as any).user;
-    console.log('user: ', user);
+    const user = request.user;
 
     if (!user) {
       throw new UnauthorizedException('用户未登录');
@@ -36,16 +35,23 @@ export class PermissionGuard implements CanActivate {
     let permissions = await this.redisService.listGet(redis_key);
 
     if (permissions.length === 0) {
-      const foundUser = await this.userService.findByUsername(user.username);
+      // const foundUser = await this.userService.findByUsername(user.username);
+      // permissions = foundUser.permissions.map((item) => item.name);
 
-      permissions = foundUser.permissions.map((item) => item.name);
+      const roles = await this.userService.findRolesByIds(
+        request.user.roles.map((item) => item.id),
+      );
+
+      permissions = roles.reduce((total, current) => {
+        total.push(...current.permissions.map((item) => item.name));
+        return total;
+      }, []);
 
       this.redisService.listSet(redis_key, permissions, 60 * 30);
     }
 
     const permission = this.reflector.get('permission', context.getHandler());
 
-    console.log('permissions: ', permissions);
     if (permissions.some((item) => item === permission)) {
       return true;
     } else {

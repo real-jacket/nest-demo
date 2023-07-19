@@ -28,6 +28,7 @@ import { Permission } from './user/entities/permission.entity';
 import { AaaModule } from './aaa/aaa.module';
 import { BbbModule } from './bbb/bbb.module';
 import { RedisModule } from './redis/redis.module';
+import { Role } from './user/entities/role.entity';
 
 @Module({
   imports: [
@@ -69,10 +70,10 @@ import { RedisModule } from './redis/redis.module';
       port: 3306,
       username: 'root',
       password: 'ke',
-      database: 'acl_test',
+      database: 'rbac_test',
       synchronize: true,
       logging: true,
-      entities: [User, Permission],
+      entities: [User, Role, Permission],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {

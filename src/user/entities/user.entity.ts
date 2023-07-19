@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Permission } from './permission.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User {
@@ -36,9 +36,9 @@ export class User {
   })
   updateTime: Date;
 
-  @ManyToMany(() => Permission)
+  @ManyToMany(() => Role)
   @JoinTable({
-    name: 'user_permission_relation',
+    name: 'user_role_relation',
   })
-  permissions: Permission[];
+  roles: Role[];
 }
