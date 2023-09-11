@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>refresh_token</title>
+    <script src="https://unpkg.com/axios@1.5.0/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <label>
+      账号：
+      <input type="input" />
+    </label>
+    <label>
+      密码：
+      <input type="password" />
+    </label>
+    <button id="btn">登录</button>
+    <button id="btn2">请求</button>
+
+    <div id="aaa"></div>
+    <div id="bbb"></div>
+
+    <script>
+      let refreshTokenIng = false;
+
+      let waitCallBackList = [];
+
+      axios.interceptors.request.use(function (config) {
+        if (refreshTokenIng && !config.url.includes('/user/refresh')) {
+          return new Promise((resolve, reject) => {
+            waitCallBackList.push({
+              resolve: (c = {}) => resolve({ config, ...c }),
+              reject: (c = {}) => reject({ config, ...c }),
+            });
+          });
+        }
+
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+          config.headers.authorization = 'Bearer ' + accessToken;
+        }
+        return config;
+      });
+
+      async function refreshToken() {
+        const res = await axios.get('http://localhost:3001/user/refresh', {
+          params: {
+            refresh_token: localStorage.getItem('refresh_token'),
+          },
+        });
+
+        localStorage.setItem('access_token', res.data.access_token || '');
+        localStorage.setItem('refresh_token', res.data.refresh_token || '');
+
+        return res;
+      }
+
+      axios.interceptors.response.use(
+        function (response) {
+          return response;
+        },
+        async function (error) {
+          let { data, config } = error.response;
+
+          if (
+            data.statusCode === 401 &&
+            !config.url.includes('/user/refresh')
+          ) {
+            refreshTokenIng = true;
+            const res = await refreshToken().catch((response) => {
+              return {
+                status: 500,
+              };
+            });
+            refreshTokenIng = false;
+            if (res.status === 200) {
+              waitCallBackList.forEach(({ resolve }) => {
+                resolve({
+                  headers: {
+                    Authorization: 'Bearer ' + res.data.access_token,
+                  },
+                });
+              });
+              waitCallBackList = [];
+              return axios(config);
+            } else {
+              alert('登录过期，请重新登录');
+              waitCallBackList.forEach(({ resolve }) => {
+                reject();
+              });
+              return Promise.reject(res.data);
+            }
+          } else {
+            return Promise.reject(error.response);
+          }
+        },
+      );
+
+      async function query() {
+        if (!localStorage.getItem('access_token')) {
+          alert('请先登录');
+          return;
+        }
+
+        const { data: aaaData } = await axios.get('http://localhost:3001/aaa');
+        const { data: bbbData } = await axios.get('http://localhost:3001/bbb');
+        const { data: aaaData2 } = await axios.get('http://localhost:3001/aaa');
+        const { data: aaaData3 } = await axios.get('http://localhost:3001/aaa');
+        const { data: bbbData2 } = await axios.get('http://localhost:3001/bbb');
+        const { data: aaaData4 } = await axios.get('http://localhost:3001/aaa');
+        const { data: bbbData3 } = await axios.get('http://localhost:3001/bbb');
+
+        document.getElementById('aaa').innerHTML = aaaData;
+        document.getElementById('bbb').innerHTML = bbbData;
+      }
+
+      document.getElementById('btn').addEventListener('click', async () => {
+        const username = document.querySelector('input[type="input"]').value;
+        const password = document.querySelector('input[type="password"]').value;
+        const {
+          data: { access_token, refresh_token },
+        } = await axios.post('http://localhost:3001/user/login', {
+          username,
+          password,
+        });
+
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+      });
+
+      document.getElementById('btn2').addEventListener('click', async () => {
+        query();
+      });
+    </script>
+  </body>
+</html>

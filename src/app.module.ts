@@ -36,7 +36,7 @@ import { Role } from './user/entities/role.entity';
       global: true,
       secret: 'ke',
       signOptions: {
-        expiresIn: '7d',
+        expiresIn: '30m',
       },
     }),
     CatsModule,
@@ -70,7 +70,7 @@ import { Role } from './user/entities/role.entity';
       port: 3306,
       username: 'root',
       password: 'ke',
-      database: 'rbac_test',
+      database: 'refresh_token_test',
       synchronize: true,
       logging: true,
       entities: [User, Role, Permission],
